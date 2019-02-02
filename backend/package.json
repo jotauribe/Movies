@@ -4,14 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "JotaUribe",
   "license": "ISC",
   "devDependencies": {
-    "jest": "^24.0.0"
+    "jest": "^24.0.0",
+    "nodemon": "^1.18.9"
   },
   "dependencies": {
+    "axios": "^0.18.0",
+    "dotenv": "^6.2.0",
     "express": "^4.16.4"
   }
 }
