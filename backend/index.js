@@ -1,21 +1,35 @@
 require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
+const moment = require('moment');
 const { asyncHandler } = require('./src/utils');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.get(
-  '/',
+  'api/v1/movies',
   asyncHandler(async (req, res, next) => {
-    const response = await axios.get(
-      `${process.env.TMDB_API_URL}/discover/movie?api_key${
+    const { data } = await axios.get(
+      `${process.env.TMDB_API_URL}/discover/movie?api_key=${
         process.env.TMDB_API_KEY
       }`
     );
 
-    return res.send(response.data);
+    const movies = data.results.map(movie => {
+      const { id, title, overview, poster_path, release_date } = movie;
+      const baseURL = 'https://image.tmdb.org/t/p';
+
+      return {
+        id,
+        title,
+        overview,
+        release_date,
+        poster: `${baseURL}/original/${poster_path}`
+      };
+    });
+
+    return res.send(movies);
   })
 );
 
