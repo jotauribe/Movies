@@ -25,7 +25,7 @@ app.get(
         title,
         overview,
         release_date,
-        poster: `${baseURL}/original/${poster_path}`
+        poster: `${baseURL}/w300/${poster_path}`
       };
     });
 
