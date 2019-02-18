@@ -2,23 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 
 const MovieCard = styled.div`
-  --card-size: ${props => props.size}%;
-  --lateral-margin: 0.125em;
-  flex: 0 0 calc(var(--card-size) - var(--lateral-margin));
   display: flex;
   flex-direction: column;
-  transition: 450ms all;
   position: relative;
-  margin: 0 var(--lateral-margin) 0 var(--lateral-margin);
-
-  &:hover ~ .movie-card {
-    transition: 450ms all;
-    transform: translate3d(50%, 0, 0);
-  }
 `;
 
 const Poster = styled.img`
-  width: 200px;
+  width: 100%;
 `;
 
 const MovieInfo = styled.div`
@@ -54,19 +44,23 @@ const Movie = ({
   style,
   className,
   ...otherProps
-}) => (
-  <MovieCard
-    className={`movie-card ${className}`}
-    style={{ ...style }}
-    {...otherProps}
-  >
-    <Poster className="movie-card__poster" src={poster} alt="poster" />
-    <MovieInfo className="movie-card__information">
-      <span className="movie-card__title">{title}</span>
-      <i className="movie-card__release-date">{release_date}</i>
-      <Overview className="movie-card__information">{overview}</Overview>
-    </MovieInfo>
-  </MovieCard>
-);
+}) => {
+  const classes = ['movie-card', className];
+
+  return (
+    <MovieCard
+      className={classes.join(' ')}
+      style={{ ...style }}
+      {...otherProps}
+    >
+      <Poster className="movie-card__poster" src={poster} alt="poster" />
+      <MovieInfo className="movie-card__information">
+        <span className="movie-card__title">{title}</span>
+        <i className="movie-card__release-date">{release_date}</i>
+        <Overview className="movie-card__information">{overview}</Overview>
+      </MovieInfo>
+    </MovieCard>
+  );
+};
 
 export default Movie;

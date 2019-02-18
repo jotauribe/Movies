@@ -1,69 +1,39 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 import Movie from '../Movie';
-import Expandable from '../Expandable';
-import GalleryItem from '../GalleryItem';
+import Slider from '../Slider';
 import { getFakedMovies } from '../../services/api';
 
-const ExpandableMovieCard = Expandable(Movie);
+function Gallery(props) {
+  const documentWidth = useDocumentWidth();
 
-const GalleryRow = styled.div`
-  margin-top: ${props => props.margin}%;
+  const movies = getFakedMovies();
+  const itemsPerRow = parseInt(documentWidth / 200);
+  const rowItemSize = 100 / itemsPerRow;
+  const rows = _.chunk(movies, itemsPerRow);
 
-  .gallery-row__inner {
-    display: flex;
-    width: 100%;
-    transition: 450ms all;
-    align-items: center;
-  }
-  .gallery-row__inner:hover {
-    transform: translate3d(-${props => props.margin / 2}%, 0, 0);
-  }
-`;
+  return (
+    <div className="gallery" style={{ overflow: 'hidden', width: '100%' }}>
+      {rows.map(row => (
+        <Slider itemSize={rowItemSize} width={documentWidth}>
+          {row.map((movie, index) => (
+            <Movie {...movie} />
+          ))}
+        </Slider>
+      ))}
+    </div>
+  );
+}
 
-class Gallery extends Component {
-  componentDidMount() {
-    this.updateGrid();
-    window.addEventListener('resize', this.updateGrid);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateGrid);
-  }
-
-  updateGrid = () => {
-    const windowWidth = document.documentElement.clientWidth;
-    const itemsPerRow = parseInt(windowWidth / 200);
-
-    this.setState(state => ({
-      ...state,
-      windowWidth,
-      itemsPerRow
-    }));
-  };
-
-  render() {
-    const movies = getFakedMovies();
-    const windowWidth = document.documentElement.clientWidth;
-    const itemsPerRow = parseInt(windowWidth / 200);
-    const rows = _.chunk(movies, itemsPerRow);
-    const size = 100 / itemsPerRow;
-
-    return (
-      <div className="gallery" style={{ overflow: 'hidden' }}>
-        {rows.map(row => (
-          <GalleryRow margin={size / 2}>
-            <div className="gallery-row__inner">
-              {row.map(movie => (
-                <ExpandableMovieCard {...movie} size={size} key={movie.id} />
-              ))}
-            </div>
-          </GalleryRow>
-        ))}
-      </div>
-    );
-  }
+function useDocumentWidth() {
+  const [width, setWidth] = useState(document.documentElement.clientWidth);
+  useEffect(() => {
+    setWidth(document.documentElement.clientWidth);
+    const handleResize = () => setWidth(document.documentElement.clientWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  });
+  return width;
 }
 
 export default Gallery;
